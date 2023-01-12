@@ -1,7 +1,9 @@
-import ntplib
+"""Sclock"""
+import sys
 from datetime import datetime, timedelta
 import logging
-import sys
+import ntplib
+
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -11,22 +13,29 @@ logging.basicConfig(
 
 
 class SClock:
-    def __init__(self):
-        self.current_dateTime: datetime = None
+    """Class to manage the clocks"""
 
-    def getDateTimeOnline(self) -> None:
+    def __init__(self):
+        self.current_datetime: datetime = None
+
+    def get_datetime_online(self) -> None:
+        """Queries ntp to get current time"""
         try:
             client = ntplib.NTPClient()
             response = client.request("pool.ntp.org")
-            Internet_date_time = datetime.fromtimestamp(response.tx_time)
-            logging.info("Got time from ntp %s" % Internet_date_time)
-            self.current_dateTime = Internet_date_time
+            internet_date_time = datetime.fromtimestamp(response.tx_time)
+            logging.info("Got time from ntp %s", internet_date_time)
+            self.current_datetime = internet_date_time
 
-        except Exception as Ex:
-            logging.error("Could not get time from ntp: %s" % Ex)
+        except Exception as ex:
+            logging.error("Could not get time from ntp: %s", ex)
 
-    def appendTime(self) -> None:
-        self.current_dateTime += timedelta(seconds=1)
+    def increment_time(self) -> None:
+        """Increments time"""
 
-    def showTime(self) -> datetime:
-        return self.current_dateTime
+        self.current_datetime += timedelta(seconds=1)
+
+    def get_time(self) -> datetime:
+        """Returns current time"""
+
+        return self.current_datetime
